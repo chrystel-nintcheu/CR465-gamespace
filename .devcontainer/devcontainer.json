@@ -22,6 +22,7 @@
     //},
     // Use 'forwardPorts' to make a list of ports inside the container available locally.
     "forwardPorts": [
+        80,
         8080,
         8081,
         8443
@@ -46,7 +47,8 @@
                 "GitHub.copilot-chat",
                 "GitHub.copilot",
                 "ms-azuretools.vscode-docker",
-                "ms-azuretools.vscode-containers"
+                "ms-azuretools.vscode-containers",
+                "ms-vscode-remote.remote-ssh"
             ]
         }
     },

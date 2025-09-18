@@ -26,7 +26,7 @@
     },
     //"runArgs": ["--privileged"],
     //"onCreateCommand": "",
-    //"postStartCommand": "",
+    "postStartCommand": "apt-get update && apt-get install -y unzip && curl -sL https://aka.ms/InstallAzureCLIDeb | bash && az bicep install",
     "customizations": {
         "vscode": {
             "extensions": [

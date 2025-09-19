@@ -24,7 +24,6 @@
     "forwardPorts": [
         80,
         8080,
-        8081,
         8443
     ],
     "portsAttributes": {

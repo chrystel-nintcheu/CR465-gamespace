@@ -3,7 +3,7 @@
     // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
     "dockerComposeFile": "docker-compose.yml",
     "service": "app",
-    "workspaceFolder": "/workspaces/CR465-game-space",
+    "workspaceFolder": "/workspaces/CR465-gamespace",
     /*
     "features": {
         "ghcr.io/devcontainers/features/azure-cli:1": {

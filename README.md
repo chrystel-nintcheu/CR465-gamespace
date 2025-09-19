@@ -1,2 +1,2 @@
-# CR465-game-space
+# CR465-gamespace
 Terrain de jeux destiné aux divers laboratoires du CR465

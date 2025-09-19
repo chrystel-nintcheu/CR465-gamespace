@@ -23,10 +23,10 @@ services:
       - DRUPAL_DB_USER=spaceuser
       - DRUPAL_DB_PASSWORD=mycoolsecret
       #- DRUPAL_TRUSTED_HOST_PATTERNS=localhost,127.0.0.1
-      #- DRUPAL_TRUSTED_HOST_PATTERNS=^probable-goldfish-vr7j76gx9jrcwwx5-80\\.app\\.github\\.dev$
-      - DRUPAL_TRUSTED_HOST_PATTERNS=^probable-goldfish-vr7j76gx9jrcwwx5-80\\.app\\.github\\.dev$,^localhost$,^127\\.0\\.0\\.1$
+      #- DRUPAL_TRUSTED_HOST_PATTERNS=^reimagined-rotary-phone-w5jqjr9wx7xfv9x-80\\.app\\.github\\.dev$
+      - DRUPAL_TRUSTED_HOST_PATTERNS=^reimagined-rotary-phone-w5jqjr9wx7xfv9x-80\\.app\\.github\\.dev$,^localhost$,^127\\.0\\.0\\.1$
     volumes:
-      #- drupal_data:/var/www/html/sites/default
+      - drupal_data:/var/www/html/sites/default
       - ../scripts/settings.php:/var/www/html/sites/default/settings.php
 
   db:
@@ -50,4 +50,4 @@ services:
 
 volumes:
   db_data:
-  #drupal_data:
+  drupal_data:

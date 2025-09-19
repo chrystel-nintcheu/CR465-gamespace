@@ -1,0 +1,36 @@
+# FROM drupal:latest
+FROM php:8.2-apache
+
+# Installation des dépendances système
+RUN apt-get update && apt-get install -y git unzip
+RUN apt-get install -y libicu-dev libpng-dev libjpeg-dev libonig-dev libxml2-dev zip
+
+# Installation de Composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+	&& php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
+	&& php -r "unlink('composer-setup.php');"
+
+# Installation de Drush
+RUN composer require drush/drush:10.* --no-interaction
+RUN ln -s /var/www/html/vendor/bin/drush /usr/local/bin/drush
+
+# Installation des modules Drupal
+WORKDIR /var/www/html
+RUN composer create-project drupal-composer/drupal-project:10.x-dev /var/www/html --no-interaction
+RUN composer require drupal/restui drupal/rest drupal/serialization drupal/hal --no-interaction
+
+# Droits sur le dossier modules
+RUN chown -R www-data:www-data /var/www/html/web/modules/
+
+# Activation des modules Drupal
+RUN drush en -y restui rest serialization hal
+# Installation du module restui et activation des modules REST
+RUN apt-get update && apt-get install -y git unzip
+RUN drupal_path=/var/www/html && \
+	cd $drupal_path && \
+	composer require drupal/restui && \
+	composer require drupal/rest && \
+	composer require drupal/serialization && \
+	composer require drupal/hal && \
+	chown -R www-data:www-data modules/ && \
+	drush en -y restui rest serialization hal

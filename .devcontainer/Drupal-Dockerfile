@@ -1,2 +1,10 @@
 FROM drupal:latest
 
+# Installer Drush via Composer
+RUN composer global require drush/drush
+# Ajouter Drush au PATH
+ENV PATH="/root/.composer/vendor/bin:${PATH}"
+
+# Installer le module restui via Composer
+RUN composer require drupal/restui
+

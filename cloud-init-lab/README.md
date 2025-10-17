@@ -62,17 +62,6 @@ Images UbuntuLTS disponibles à ce jour pour la VM:
 - **Ubuntu2404**
 - Ubuntu2404Pro
 - Debian11
-- CentOS85Gen2 
-- RHELRaw8LVMGen2
-- OpenSuseLeap154Gen2 
-- SuseSles15SP5
-- FlatcarLinuxFreeGen2
-- Win2022Datacenter
-- Win2022AzureEditionCore
-- Win2019Datacenter
-- Win2016Datacenter
-- Win2012R2Datacenter
-- Win2012Datacenter
 
 ```
 az vm create \
@@ -119,6 +108,7 @@ Une fois dans la VM:
 
 ```
 sudo cloud-init status --long
+sudo cloud-init schema --system
 sudo tail -n 200 /var/log/cloud-init.log /var/log/cloud-init-output.log
 sudo tail -n 200 /var/log/apt/term.log /var/log/apt/history.log
 ```
@@ -126,7 +116,7 @@ sudo tail -n 200 /var/log/apt/term.log /var/log/apt/history.log
 ## 6. Afin d'écraser votre VM puis rédéployer sans repasser au travers de toutes les étapes ci-dessus:
 
 ```
-./reCreateVM.sh <votre-matricule> <VM-NAME>
+./reCreateVM.sh <votre-matricule> <VM-NAME> <CONTAINER_TECH>-cloud-init.yml
 ```
 
 Et puis pour mettre fin à l'expérimentation et donc détruire la VM

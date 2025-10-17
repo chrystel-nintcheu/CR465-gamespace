@@ -73,3 +73,4 @@ if [ -n "$NIC_IDS" ]; then
 fi
 
 echo "Suppression terminée. Vérifiez le portail ou 'az resource list' si nécessaire."
+az resource list --resource-group "$RESOURCE_GROUP" --output table || true

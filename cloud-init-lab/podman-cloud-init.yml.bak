@@ -65,6 +65,13 @@ write_files:
       # Activer le socket podman si disponible
       systemctl enable --now podman.socket || true
 
+      # Attendre la création de l'utilisateur cloud-init
+      for i in $(seq 1 30); do
+        if id -u azureuser >/dev/null 2>&1; then
+          break
+        fi
+        sleep 1
+      done
 
       # Préparer /home/azureuser et droits corrects
       mkdir -p /home/azureuser
@@ -75,6 +82,14 @@ write_files:
         chown azureuser:azureuser /home/azureuser/podman-compose.yml || true
         chmod 0644 /home/azureuser/podman-compose.yml || true
       fi
+
+      # Attendre l'apparition de la commande podman
+      for i in $(seq 1 20); do
+        if command -v podman >/dev/null 2>&1; then
+          podman --version >/dev/null 2>&1 && break
+        fi
+        sleep 1
+      done
 
       # Lancer podman-compose en rootless avec runuser
       runuser -l azureuser -c 'cd /home/azureuser && podman-compose -f podman-compose.yml up -d' || true

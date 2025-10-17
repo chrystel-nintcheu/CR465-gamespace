@@ -1,0 +1,41 @@
+#cloud-config
+package_update: true
+#package_upgrade: true
+
+packages:
+  - podman
+  - podman-compose
+  - python3-pip
+  - git
+  - git-lfs
+
+users:
+  - name: azureuser
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: []
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDt6GCHfvG/BBgvdWH/DZ4/2wOEV97W5ZSPI5bhYFLBHXfKO2P6PEYdQKVyVh5FL0GrX8Nc5EU3M8WQDQV4QN4o0FeLH+tbhZNgArLluzryvFceQa37uBYsphUmbHWG9+Gl21ly0qf6YyGtEj3k4wpAxHNlS0dzaah9ZGoBKgo48nmRTafCSZrmLfgscA2wPDgI4ev210SEYlsbx+tsZtUEYUOyReDFgBueda2BPArG21yGpGuNhLv9q/GjS4zTlvp/QgR5gI5BMLryY1vstubn3Ofk5HOGEutjciIDF0HPuQa/PF6r9TuDQEYJlcDCai3c/aWdghPmhFAiAwpcpwhwFHQZ5giRp6Geqz/A51x13H8dSGax/CZA+VdyonUqtEYuTYxrB6//USJR/XY+JAoRmQLQOjH2onk9oIJLJkzTiBClUXgvl5LR7EgMJqE8AVEhTNZWtu7UDcKljv+Jinq/ZOpV8oXkjl3xkEmjKh+lbggz41qTvExI156bec2lKrGfPpo5hBshthev/smN3+OPrMAPfT9mZMEVyUlNPW/LmBV2aORJkixxPYXzyyBLFRfpjAL9IdGuRxp2YHH2g6Acly9EGhmGNBsQyvxqcTf8RAzl7EVWIDs+siKsOqEg0w7Rt/j6FiS8p+BmfRb8NYpKAcHkkeAsI1SUUv232CpShQ== vscode@83deeffe2254
+
+write_files:
+  - path: /home/azureuser/podman-compose.yml
+    permissions: '0644'
+    owner: azureuser:azureuser
+    content: |
+      version: '3'
+      services:
+        web:
+          image: docker.io/library/nginx:stable
+          ports:
+            - "80:80"
+            - "443:443"
+          restart: always
+
+runcmd:
+  - [ sh, -c, "apt-get update && apt-get install -y podman python3-pip git git-lfs podman-compose || true" ]
+  - [ sh, -c, "chown -R azureuser:azureuser /home/azureuser || true" ]
+  - [ sh, -c, "systemctl enable --now podman.socket || true" ]
+  - [ sh, -c, "for i in \$(seq 1 20); do command -v podman && podman --version && break || sleep 1; done" ]
+  - [ sh, -c, "cd /home/azureuser && sudo -u azureuser podman-compose -f /home/azureuser/podman-compose.yml up -d || true" ]
+
+final_message: "Podman et podman-compose installés. nginx déployé via podman-compose (rootless)."

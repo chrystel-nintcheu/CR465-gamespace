@@ -126,11 +126,11 @@ sudo tail -n 200 /var/log/apt/term.log /var/log/apt/history.log
 ## 6. Afin d'écraser votre VM puis rédéployer sans repasser au travers de toutes les étapes ci-dessus:
 
 ```
-./reCreateVM.sh p109903
+./reCreateVM.sh <votre-matricule> <VM-NAME>
 ```
 
 Et puis pour mettre fin à l'expérimentation et donc détruire la VM
 
 ```
-./deleteVM.sh
+./deleteVM.sh <votre-matricule> <VM-NAME>
 ```

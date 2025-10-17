@@ -113,10 +113,24 @@ The connect :
 ssh azureuser@<public-ip>
 
 ```
-ssh azureuser@52.156.15.131
+### 5.1 - Vérifier l'installation de la VM
 
-## 7. Afin d'écraser votre VM puis rédéployer sans repasser au travers de toutes les étapes ci-dessus:
+Une fois dans la VM:
 
 ```
-./deleteVM.sh p109903
+sudo cloud-init status --long
+sudo tail -n 200 /var/log/cloud-init.log /var/log/cloud-init-output.log
+sudo tail -n 200 /var/log/apt/term.log /var/log/apt/history.log
+```
+
+## 6. Afin d'écraser votre VM puis rédéployer sans repasser au travers de toutes les étapes ci-dessus:
+
+```
+./reCreateVM.sh p109903
+```
+
+Et puis pour mettre fin à l'expérimentation et donc détruire la VM
+
+```
+./deleteVM.sh
 ```

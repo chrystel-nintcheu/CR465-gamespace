@@ -1,126 +1,287 @@
-## 1. Prepare the cloud-init YAML
-Here's an example that updates the system, installs Docker and Docker Compose, adds the default user to the docker group, copies your Docker Compose file, and launches the defined services:
+# Tutoriel : Déploiement d'une VM Azure avec Docker via cloud-init
 
-## 2. Preparer clés SSH 
-Sur Linux, les clés SSH (y compris la clé RSA) sont généralement stockées dans le répertoire ~/.ssh/. Voici les emplacements typiques :
+Ce guide vous accompagne, étape par étape, dans le déploiement d'une machine virtuelle Ubuntu sur Azure, configurée automatiquement avec Docker et Docker Compose.
 
-**Clé privée** :
-```
- ~/.ssh/id_rsa
-```
-**Clé publique** :
-```
- ~/.ssh/id_rsa.pub
+---
+
+## Table des Matières
+
+1. [Préparer le fichier cloud-init YAML](#étape-1--préparer-le-fichier-cloud-init-yaml)
+2. [Préparer vos clés SSH](#étape-2--préparer-vos-clés-ssh)
+3. [Choisir l’abonnement par défaut Azure](#étape-3--choisir-labonnement-par-défaut-azure)
+4. [Créer un groupe de ressources](#étape-4--créer-un-groupe-de-ressources)
+5. [Créer et configurer la VM](#étape-5--créer-et-configurer-la-vm)
+6. [Ouvrir les ports nécessaires (HTTP, HTTPS, SSH)](#étape-6--ouvrir-les-ports-nécessaires-http-https-ssh)
+7. [Obtenir l’adresse IP publique de la VM](#étape-7--obtenir-ladresse-ip-publique-de-la-vm)
+8. [Connexion SSH à la VM](#étape-8--connexion-ssh-à-la-vm)
+9. [Vérification de l’installation sur la VM](#étape-9--vérification-de-linstallation-sur-la-vm)
+10. [Scripts pour gérer la VM](#étape-10--scripts-pour-gérer-la-vm)
+
+---
+
+## Prérequis
+
+- Compte Azure actif
+- Azure CLI installé
+- Accès en ligne de commande
+- Connaissance basique de Docker
+
+---
+
+## Étape 1 : Préparer le fichier cloud-init YAML
+
 ```
 
-**Pour vérifier si vous avez déjà des clés SSH, vous pouvez exécuter**
+\#cloud-config
+package_update: true
+package_upgrade: true
+packages:
+
+- docker.io
+- docker-compose
+...
 
 ```
+Ce fichier `cloud-init.yml` permet de :
+- Mettre à jour le système
+- Installer Docker et Docker Compose
+- Ajouter l’utilisateur par défaut au groupe docker
+- Copier votre fichier Docker Compose
+- Lancer les services définis
+
+---
+
+## Étape 2 : Préparer vos clés SSH
+
+### Chemin des clés sur Linux
+
+```
+
+~/.ssh/id_rsa
+
+```
+Clé privée.
+
+```
+
+~/.ssh/id_rsa.pub
+
+```
+Clé publique.
+
+### Vérifier la présence de vos clés
+
+```
+
 ls -la ~/.ssh/
-```
-Si vous n'avez pas encore de clé RSA, vous pouvez en générer une avec :
 
 ```
+Permet de vérifier si vous avez déjà une clé SSH.
+
+### Générer une clé SSH (si nécessaire)
+
+```
+
 ssh-keygen -t rsa -b 4096
-```
-
-## 3. Deploy the VM with Azure CLI
-### 3.1 - Choisir un abonnement par défaut
- 
-Voir la liste des abonnements disponible
 
 ```
+Pour générer une nouvelle clé RSA.
+
+---
+
+## Étape 3 : Choisir l’abonnement par défaut Azure
+
+```
+
 az account list --output table
-```
-Dans le résulta affiché, assurez-vous d'utiliser l'abonnement qui correspond au tenant que vous souhaitez utiliser. Dans notre cas, on sélectionnera polymlt.
-
-Une fois que vous avez identifié l'abonnement que vous souhaitez utiliser, vous pouvez le définir comme abonnement par défaut avec :
 
 ```
+Liste les abonnements disponibles.
+
+```
+
 az account set --subscription "<Nom-Ou-ID-de-l-abonnement>"
-```
-
-### 3.2 - Créer un groupe de ressource.
-
-Ici, le but est de définir un espace de travail.
-
-Run the following from Codespaces terminal or local CLI (adjust region, VM name, etc.):
-
-> Note: **canadacentral (Toronto)**, canadaeast (Québec)
-
-[Product Availability by Region](https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/table)
-
-[Azure Speed Test](https://www.azurespeed.com/Information/AzureRegions)
 
 ```
+Sélectionne l’abonnement à utiliser.
+
+---
+
+## Étape 4 : Créer un groupe de ressources
+
+```
+
 az group create --name rg-cr465gamespace-<votre-matricule> --location canadacentral
+
 ```
+Crée un espace de travail (groupe de ressources) dans Azure.
+Remplacez `<votre-matricule>` par votre numéro personnel.
 
-Images UbuntuLTS disponibles à ce jour pour la VM:
+---
 
-- **Ubuntu2204**
-- **Ubuntu2404**
+## Étape 5 : Créer et configurer la VM
+
+Images disponibles :
+- Ubuntu2204
+- Ubuntu2404
 - Ubuntu2404Pro
 - Debian11
 
 ```
+
 az vm create \
-  --resource-group rg-cr465gamespace-<votre-matricule> \
-  --name ubuntuDockerVM \
-  --image <UbuntuLTS> \
-  --admin-username azureuser \
-  --size Standard_B1s \
-  --custom-data cloud-init.yml \
-  --ssh-key-values <path-to-your-public-key> --debug
+--resource-group rg-cr465gamespace-<votre-matricule> \
+--name ubuntuDockerVM \
+--image <UbuntuLTS> \
+--admin-username azureuser \
+--size Standard_B1s \
+--custom-data cloud-init.yml \
+--ssh-key-values <path-to-your-public-key> --debug
+
+```
+Crée une VM Ubuntu sur Azure, personnalisée via cloud-init.
+Remplacez `<votre-matricule>`, `<UbuntuLTS>`, et `<path-to-your-public-key>` selon votre contexte.
+
+---
+
+## Étape 6 : Ouvrir les ports nécessaires (HTTP, HTTPS, SSH)
+
 ```
 
-## 4. Exposer les ports de votre VM
-
-Pour HTTP (port 80)
-```
 az vm open-port --port 80 --resource-group rg-cr465gamespace-<votre-matricule> --name ubuntuDockerVM --priority 100
+
 ```
-Pour HTTPS (port 443)
+Ouvre le port HTTP (80).
+
 ```
+
 az vm open-port --port 443 --resource-group rg-cr465gamespace-<votre-matricule> --name ubuntuDockerVM --priority 200
+
 ```
-Pour SSH (port 22)
+Ouvre le port HTTPS (443).
+
 ```
+
 az vm open-port --port 22 --resource-group rg-cr465gamespace-<votre-matricule> --name ubuntuDockerVM --priority 300
-```
-## 5. Ouvrir une connexion SSh
-
-After deployment, get the VM's public IP:
 
 ```
+Ouvre le port SSH (22).
+
+---
+
+## Étape 7 : Obtenir l’adresse IP publique de la VM
+
+```
+
 az vm show --resource-group rg-cr465gamespace-<votre-matricule> --name ubuntuDockerVM -d --query publicIps -o tsv
-```
-The connect :
-
 
 ```
+Récupère l'adresse IP publique pour vous connecter à votre VM.
+
+---
+
+## Étape 8 : Connexion SSH à la VM
+
+```
+
 ssh azureuser@<public-ip>
 
 ```
-### 5.1 - Vérifier l'installation de la VM
+Connexion à la VM (remplacez `<public-ip>` par l’adresse obtenue à l’étape précédente).
 
-Une fois dans la VM:
+---
+
+## Étape 9 : Vérification de l’installation sur la VM
 
 ```
+
 sudo cloud-init status --long
+
+```
+Vérifie le statut détaillé de cloud-init.
+
+```
+
 sudo cloud-init schema --system
+
+```
+Contrôle la validité du schéma cloud-init.
+
+```
+
 sudo tail -n 200 /var/log/cloud-init.log /var/log/cloud-init-output.log
+
+```
+Affiche les derniers logs cloud-init.
+
+```
+
 sudo tail -n 200 /var/log/apt/term.log /var/log/apt/history.log
-```
-
-## 6. Afin d'écraser votre VM puis rédéployer sans repasser au travers de toutes les étapes ci-dessus:
 
 ```
+Affiche l’historique des installations de paquets.
+
+---
+
+## Étape 10 : Scripts pour gérer la VM
+
+```
+
 ./reCreateVM.sh <votre-matricule> <VM-NAME> <CONTAINER_TECH>-cloud-init.yml
-```
-
-Et puis pour mettre fin à l'expérimentation et donc détruire la VM
 
 ```
+Pour réinitialiser la VM rapidement (remplacez les valeurs !).
+
+```
+
 ./deleteVM.sh <votre-matricule> <VM-NAME>
+
 ```
+Pour supprimer complètement la VM.
+
+---
+
+## Récapitulatif des étapes
+
+1. Créer le fichier cloud-init.yml
+2. Générer ou vérifier les clés SSH
+3. Sélectionner l’abonnement Azure
+4. Créer un groupe de ressources Azure
+5. Déployer la VM
+6. Ouvrir les ports nécessaires
+7. Obtenir l’IP et se connecter en SSH
+8. Vérifier l'installation avec cloud-init
+9. Gérer la VM avec les scripts fournis
+
+---
+
+## Dépannage
+
+- Vérifiez que l’abonnement Azure est actif.
+- Assurez-vous d’utiliser la bonne clé SSH.
+- Examinez les logs cloud-init si un service ne démarre pas.
+
+---
+
+## Bonnes Pratiques de Sécurité
+
+- Utilisation de groupes de sécurité réseau (NSG)
+- Rotation régulière des clés SSH
+- Mise à jour régulière des conteneurs Docker
+
+## Versions Compatibles
+- Azure CLI: 2.x
+- Docker: 20.x+
+- Ubuntu: 22.04, 24.04
+
+## Architecture
+
+```mermaid
+graph TD
+    A[Client] -->|SSH| B[Azure VM]
+    B --> C[Docker]
+    C --> D[Container 1]
+    C --> E[Container 2]
+    B -->|Port 80| F[Web Access]
+```
+

@@ -128,17 +128,28 @@ Images disponibles :
 - Debian11
 
 ```
-
 az vm create \
 --resource-group rg-cr465gamespace-<votre-matricule> \
---name ubuntuDockerVM \
+--name <nom-de-la-vm> \
 --image <UbuntuLTS> \
 --admin-username azureuser \
 --size Standard_B1s \
---custom-data cloud-init.yml \
+--custom-data <container-tech>-cloud-init.yml \
 --ssh-key-values <path-to-your-public-key> --debug
+```
+> **EXEMPLE**
 
 ```
+az vm create \
+--resource-group rg-cr465gamespace-<votre-matricule> \
+--name lxdVM \
+--image Ubuntu2204 \
+--admin-username azureuser \
+--size Standard_B1s \
+--custom-data lxd-cloud-init.yml \
+--ssh-key-values ~/.ssh/id_rsa.pub --debug
+```
+
 Crée une VM Ubuntu sur Azure, personnalisée via cloud-init.
 Remplacez `<votre-matricule>`, `<UbuntuLTS>`, et `<path-to-your-public-key>` selon votre contexte.
 

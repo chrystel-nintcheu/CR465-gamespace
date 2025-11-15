@@ -1,6 +1,0 @@
-{
-  "adminUsername": { "value": "azureuser" },
-  "sshPublicKey": { "value": "COLLEZ_VOTRE_CLÉ_PUBLIQUE_ICI" },
-  "instanceCount": { "value": 3 },
-  "vmSku": { "value": "Standard_D2s_v3" }
-}

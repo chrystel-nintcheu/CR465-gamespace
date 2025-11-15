@@ -1,4 +1,5 @@
 # Séance 11 - Introduction à l'infrastructure comme code (Cas de Bicep)
+> REMARQUE: Certaines limitations peuvent se présenter dépendamment de votre abonnement azure.
 
 ## 1. Fichier de paramètres (main.parameters.json)
 

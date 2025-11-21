@@ -1,0 +1,9 @@
+{
+  "containerGroupName": { "value": "drupal-ct" },
+  "location": { "value": "canadacentral" },
+  "imageName": { "value": "drupal:10" },
+  "containerName": { "value": "drupal" },
+  "cpuCores": { "value": 1 },
+  "memoryInGb": { "value": 2 },
+  "port": { "value": 80 }
+}

@@ -1,0 +1,17 @@
+services:
+  drupal:
+    image: drupal:10
+    ports:
+      - "8080:80"
+    environment:
+      - DRUPAL_DB_HOST=db
+      - DRUPAL_DB_NAME=drupal
+      - DRUPAL_DB_USER=drupal
+      - DRUPAL_DB_PASSWORD=motdepassefort
+  db:
+    image: mysql:8
+    environment:
+      - MYSQL_DATABASE=drupal
+      - MYSQL_USER=drupal
+      - MYSQL_PASSWORD=motdepassefort
+      - MYSQL_ROOT_PASSWORD=motdepasse_racine

@@ -3,6 +3,7 @@
 > Déployer une image drupal avec bicep dans azure
 
 ## Deploy
+
 ```
 az deployment group create \
   --resource-group yourResourceGroup  \
@@ -21,6 +22,7 @@ az deployment group create \
 
 
 ## Get IP
+
 ```
 az container show \
   --resource-group yourResourceGroup \
